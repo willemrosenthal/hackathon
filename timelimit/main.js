@@ -27,6 +27,8 @@ const reset = object => {
   localStorage.setItem(currentDomain, 0);
 };
 
+
+// check if site is on blacklist
 const checkSite = (site, object) => {
 
   Object.keys(object).forEach(key => {
@@ -51,6 +53,11 @@ const initilizeLoop = () => {
 };
 
 
+function test () {
+  alert("TEST");
+}
+
+
 // loop
 const looper = () => {
   if(!document.hidden) {
@@ -60,13 +67,16 @@ const looper = () => {
 
   lastTime = Date.now();
 
-setTimeout(looper, 100);
-console.log(msElapsed)
+  setTimeout(looper, 100);
+  console.log(msElapsed)
+
+  const resetBtn = document.querySelector('button');
+  resetBtn.style.color = 'red'; 
+  const blacklistButn = document.querySelector('#blacklist');
+  console.log(blacklistButn);
 
 }
 
-const resetBtn = document.querySelector('button');
-resetBtn.style.color = 'red'; 
 
 initilizeLoop();
 reset();

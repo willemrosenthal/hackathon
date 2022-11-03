@@ -7,8 +7,9 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*"],
-      "js": ["./main.js"]
+      "matches": ["https://www.youtube.com/*", "https://www.google.com/*"],
+      "js": ["./frontend.js"],
+      "css": ["style.css"]
     }
   ]
 }
