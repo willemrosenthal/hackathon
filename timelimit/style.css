@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
 
-body {
-  font-family: 'Poppins', sans-serif;
+#tracker {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 14px !important;
   /* background-color: black; */
 }
 
@@ -13,13 +14,14 @@ body {
   /* height: 235px; */
   height: 70px;
   border-radius: 12px;
-  position: absolute;
+  position: fixed;
   bottom: 20px;
   right: 20px;
   background-color: white;
   transition: all .3s;
   overflow: hidden;
   z-index: 10000;
+  box-sizing: content-box !important;
   /* box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.365); */
 }
 
@@ -43,22 +45,33 @@ body {
 }
 
 .favIconImg {
-  margin-top: -2px;
+  margin-top: -1px;
   border: 2px solid rgb(221, 221, 221);
   border-radius: 16px;
 }
 
 .dontMove button {
-  border: 1px solid rgb(222, 222, 222);
-  border-radius: 5px;
-  padding: 5px;
-  background-color: white;
+  border: 1px solid rgb(222, 222, 222) !important;
+  border-radius: 5px !important;
+  padding: 0 !important;
+  padding: 5px !important;
+  background-color: white !important;
+  margin: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  box-sizing: content-box !important;
 }
 
 .dontMove input {
-  border: 1px solid rgb(222, 222, 222);
-  border-radius: 5px;
-  margin-bottom: 10px;
+  border: 1px solid rgb(222, 222, 222) !important;
+  border-radius: 5px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  margin-bottom: 10px !important;
+  padding-left: 5px !important;
+  height: auto !important;
+  width: 100% !important;
+  box-sizing: content-box !important;
 }
 
 
@@ -110,6 +123,10 @@ body {
   margin-top: -10px;
   font-size: 12px;
   text-align: right;
+}
+
+#removeBlacklistBtn {
+  margin-top: 8px !important;
 }
 
 .barContainer {

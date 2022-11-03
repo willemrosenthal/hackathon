@@ -16,6 +16,8 @@ let graphContent;
 let siteLimit = 1000;
 const minConversion = 60000;
 
+const expandedWindowSize = 240;
+
 let loopTimeoutId;
 
 // const barStartColor;
@@ -35,7 +37,7 @@ const initilizeLoop = () => {
 
 const loopCheckForOnBlacklist = () => {
   if (checkIfBlacklistedAndSetupInitialValues()) {
-    document.getElementById('tracker').style.height = 230+"px";
+    document.getElementById('tracker').style.height = expandedWindowSize+"px";
     graphContent.style.display = 'block';
     controls.style.display = "none";
     looper();
