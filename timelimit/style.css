@@ -10,14 +10,16 @@ body {
   border: 2px solid rgb(221, 221, 221);
   padding: 25px 30px;
   width: 80px;
-  height: 235px;
+  /* height: 235px; */
+  height: 70px;
   border-radius: 12px;
   position: absolute;
   bottom: 20px;
   right: 20px;
   background-color: white;
-  transition: height 0.4s ease;
+  transition: all .3s;
   overflow: hidden;
+  z-index: 10000;
   /* box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.365); */
 }
 
@@ -27,7 +29,7 @@ body {
 
 #controls {
   /* border: 1px solid salmon; */
-  border: 2px solid rgb(221, 221, 221);
+  /* border: 2px solid rgb(221, 221, 221);
   padding: 25px 30px;
   width: 80px;
   height: 70px;
@@ -35,7 +37,8 @@ body {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  background-color: white;
+  background-color: white; */
+  display: none;
   /* box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.365); */
 }
 

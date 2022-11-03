@@ -7,7 +7,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*", "https://www.google.com/*"],
+      "matches": ["<all_urls>"],
       "js": ["./frontend.js"],
       "css": ["style.css"]
     }

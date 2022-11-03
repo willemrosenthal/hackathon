@@ -11,9 +11,15 @@ let graph;
 let bar;
 // ref to our controls object
 let controls;
+let graphContent;
 // max time limit per site in ms
 let siteLimit = 1000;
 const minConversion = 60000;
+
+let loopTimeoutId;
+
+// const barStartColor;
+// const barEndColor;
 
 // bool to determine if we've gone past max time
 let exceededTime = false;
@@ -28,24 +34,34 @@ const initilizeLoop = () => {
 };
 
 const loopCheckForOnBlacklist = () => {
-  if (checkIfSiteIsBlacklisted()) {
-    document.getElementById('tracker').style.height = 200;
-    graph.style.display = 'block';
+  if (checkIfBlacklistedAndSetupInitialValues()) {
+    document.getElementById('tracker').style.height = 230+"px";
+    graphContent.style.display = 'block';
     controls.style.display = "none";
     looper();
   }
   else {
+    controls.style.display = "block";
     setTimeout(loopCheckForOnBlacklist, 100);
   }
 }
 
-const checkIfSiteIsBlacklisted = () => {
+const checkIfBlacklistedAndSetupInitialValues = () => {
   // check if site on saved blacklist
-  if (localStorage.getItem(currentDomain+"_bl") === "true") {
-    msElapsed = Number(localStorage.getItem(currentDomain+"_ms"))
+  if (checkIfBlacklisted()) {
+    msElapsed = Number(localStorage.getItem(currentDomain+"_ms"));
+
+    // get limit and update label
+    siteLimit = Number(localStorage.getItem(currentDomain+"_limit"));
+    updateGraphTimeLimitLabel();
+
     return true;
   }
   return false;
+}
+
+const checkIfBlacklisted = () => {
+  return (localStorage.getItem(currentDomain+"_bl") === "true");
 }
 
 const addToBlacklist = () => {
@@ -57,6 +73,7 @@ const addToBlacklist = () => {
   // add site to bl
   localStorage.setItem(currentDomain+"_bl", true);
   localStorage.setItem(currentDomain+"_ms", 0)
+  localStorage.setItem(currentDomain+"_limit", siteLimit)
   
   // initilize loop again
   initilizeLoop();
@@ -69,7 +86,8 @@ const updateGraphTimeLimitLabel = () => {
 
 // unblacklist
 const removeFromBlacklist = () => {
-  document.getElementById('tracker').style.height = 70;
+  document.getElementById('tracker').style.height = 70+"px";
+
   if (msElapsed >= siteLimit) {
     location.reload();
   }
@@ -81,8 +99,10 @@ const removeFromBlacklist = () => {
   msElapsed = 0;
   
   // initilize loop again
-  graph.style.display = "none";
+  graphContent.style.display = "none";
   controls.style.display = "block";
+
+  clearTimeout(loopTimeoutId);
 }
 
 
@@ -104,7 +124,7 @@ const looper = () => {
   // reset last time to now
   lastTime = Date.now();
 
-  setTimeout(looper, 100);
+  if (checkIfBlacklisted()) loopTimeoutId = setTimeout(looper, 100);
   updateGraph();
 }
 
@@ -117,21 +137,21 @@ const timeExceeded = () => {
 // let curDomain = document.location;
 // const faviconStr = "https://s2.googleusercontent.com/s2/favicons?domain=www.stackoverflow.com";
 
-const buildControls = () => {
-  controls = document.createElement("div");
-  controls.setAttribute("class", "dontMove");
-  document.body.appendChild(controls);
+// const buildControls = () => {
+//   controls = document.createElement("div");
+//   controls.setAttribute("class", "dontMove");
+//   document.body.appendChild(controls);
 
-  controls.innerHTML += `
-  <div id="controls" class="dontMove">
-    <input  class="dontMove" type="text" style="width: 100%" id="timeLimit" value="1"></input>
-    <button  class="dontMove" style="width: 100%" id="blacklistBtn">Blacklist Site</button>
-  </div>
-  `;
+//   controls.innerHTML += `
+//   <div id="controls" class="dontMove">
+//     <input  class="dontMove" type="text" style="width: 100%" id="timeLimit" value="1"></input>
+//     <button  class="dontMove" style="width: 100%" id="blacklistBtn">Blacklist Site</button>
+//   </div>
+//   `;
 
-  let blacklistBtn = document.getElementById('blacklistBtn')
-  blacklistBtn.addEventListener('click', addToBlacklist)
-}
+//   let blacklistBtn = document.getElementById('blacklistBtn')
+//   blacklistBtn.addEventListener('click', addToBlacklist)
+// }
 
 
 
@@ -145,27 +165,44 @@ const buildGraph = () => {
 
   // build template graph
   graph.innerHTML += `
-    <div id="tracker" class="dontMove">
-      <div id="graph" class="dontMove">
-        <div id="limit" class="dontMove">
-          <div id="limitLabel" class="dontMove">1m</div>
+      <div id="tracker" class="dontMove">
+      <div id="graphContent" class="dontMove">
+
+        <div id="graph" class="dontMove">
+          <div id="limit" class="dontMove">
+            <div id="limitLabel" class="dontMove">1m</div>
+          </div>
+          <div id="barArea" class="dontMove">
+            <div class="barContainer dontMove"><div class="bar dontMove" id="timeBar"></div></div>
+          </div>
         </div>
-        <div id="barArea" class="dontMove">
-          <div class="barContainer dontMove"><div class="bar dontMove" id="timeBar"></div></div>
+        <div id="siteList" class="dontMove">
+          <div class="site dontMove"><img class="dontMove favIconImg" src="https://s2.googleusercontent.com/s2/favicons?domain=${currentDomain}"></div>
         </div>
+        <button style="width: 100%" class="dontMove" id="removeBlacklistBtn">Unblacklist</button>
+
       </div>
-      <div id="siteList" class="dontMove">
-        <div class="site dontMove"><img class="dontMove favIconImg" src="https://s2.googleusercontent.com/s2/favicons?domain=${currentDomain}"></div>
+
+      <div id="controls" class="dontMove">
+        <input  class="dontMove" type="text" style="width: 100%" id="timeLimit" value="1"></input>
+        <button  class="dontMove" style="width: 100%" id="blacklistBtn">Blacklist Site</button>
       </div>
-      <button style="width: 100%" class="dontMove" id="removeBlacklistBtn">Unblacklist</button>
+
     </div>
+
     `;
+
+  controls = document.getElementById("controls");
+  graphContent = document.getElementById("graphContent");
 
   let removeFromBlacklistBtn = document.getElementById('removeBlacklistBtn')
   removeFromBlacklistBtn.addEventListener('click', removeFromBlacklist);
 
+  let blacklistBtn = document.getElementById('blacklistBtn')
+  blacklistBtn.addEventListener('click', addToBlacklist)
+
   // makes tracker small
-  document.getElementById('tracker').style.height = 70;
+  document.getElementById('tracker').style.height = 70+"px";
 
   //console.log("icons: " + )
   // populate limit based on limit max
@@ -173,7 +210,7 @@ const buildGraph = () => {
   bar = document.querySelector('#timeBar');
 
   // hide graph
-  graph.style.display = 'none';
+  graphContent.style.display = 'none';
 }
 
 const updateGraph = () => {
@@ -215,5 +252,4 @@ const fuckWithSite = () => {
 
 // start app
 buildGraph();
-buildControls();
 initilizeLoop();
