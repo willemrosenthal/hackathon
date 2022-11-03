@@ -16,7 +16,10 @@ let graphContent;
 let siteLimit = 1000;
 const minConversion = 60000;
 
+// css stuff
 const expandedWindowSize = 240;
+const collapsedWindowSize = 86;
+let flashOn = false;
 
 let loopTimeoutId;
 
@@ -88,7 +91,7 @@ const updateGraphTimeLimitLabel = () => {
 
 // unblacklist
 const removeFromBlacklist = () => {
-  document.getElementById('tracker').style.height = 70+"px";
+  document.getElementById('tracker').style.height = collapsedWindowSize+"px";
 
   if (msElapsed >= siteLimit) {
     location.reload();
@@ -122,6 +125,23 @@ const looper = () => {
   if (percent > 100 && !exceededTime) timeExceeded();
   if (percent > 110) percent = 110;
   bar.style.height = (percent) + "%";
+
+  // bar flash
+  if (percent > 75 && percent <= 100) {
+    if (flashOn) {
+      bar.style.backgroundColor = "red";
+      flashOn = false;
+    }
+    else {
+      bar.style.backgroundColor = "salmon";
+      flashOn = true;
+    }
+  }
+  else if (percent >= 100) {
+    bar.style.backgroundColor = "red";
+    document.body.style.transition = `all 5s`;
+    document.body.style.setProperty('background-color', 'red', 'important');
+  }
 
   // reset last time to now
   lastTime = Date.now();
@@ -186,6 +206,7 @@ const buildGraph = () => {
       </div>
 
       <div id="controls" class="dontMove">
+        <label class="dontMove">min:</label>
         <input  class="dontMove" type="text" style="width: 100%" id="timeLimit" value="1"></input>
         <button  class="dontMove" style="width: 100%" id="blacklistBtn">Blacklist Site</button>
       </div>
@@ -204,7 +225,7 @@ const buildGraph = () => {
   blacklistBtn.addEventListener('click', addToBlacklist)
 
   // makes tracker small
-  document.getElementById('tracker').style.height = 70+"px";
+  document.getElementById('tracker').style.height = collapsedWindowSize+"px";
 
   //console.log("icons: " + )
   // populate limit based on limit max
