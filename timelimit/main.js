@@ -1,67 +1,73 @@
 
-let startTime = Date.now
-let timeOnSite 
 
-const timeTracker = {
-  "tt_youtube" : 0,
-  "tt_fb" : 0,
-  "tt_tw" : 0
-}
 
-const init = () => {
-
-}
-
-const test = () => {
-  if (!document.hidden) {
-    //console.log("test " + Math.random());
-  }
-  setTimeout(test, 300);
-}
-
-setTimeout(test, 300);
-
-let ourCookie = document.cookie;
-
-let testArrayOfCookies = document.cookie.split("test_cookie=");
-let testArrayOfCookies2 =testArrayOfCookies[1].split(";");
-
-alert(testArrayOfCookies2[0]);
-
-if (testArrayOfCookies2[0] === 'mymessage2'){
-  alert("we remember you");
-}
-else document.cookie = "tt_youtube = 5000";
-
-ourCookie = document.cookie;
-alert("should be someting:" + ourCookie);
-
+// document.cookie = "username=Debra White; path=/";
+// document.cookie = "userId=wjgye264s; path=/";
+// let cookies = document.cookie;
+// console.log(cookies); // expected output: username=Debra White; userId=wjgye264s
 
 
 // define global variables
   // object that tracks ms on each site
   // singe variable "lastTime" that's defaults to current time
 
+const timeWasters = {
+  // populated with the sites we want to avoid
+  'www.youtube.com' : 0,
+  'www.facebook.com': 0,
+  'www.twitter.com' : 0
+}
+
+let lastTime;
+let msElapsed = 0;
+
+let currentDomain = document.location.host;
+
+const reset = object => {
+  localStorage.setItem(currentDomain, 0);
+};
+
+const checkSite = (site, object) => {
+
+  Object.keys(object).forEach(key => {
+    if (site === key) {
+      msElapsed = Number(localStorage.getItem(currentDomain));
+      if (!msElapsed) {
+        localStorage.setItem(currentDomain, 0);
+      }
+    } 
+  })
+}
+
+
 // initilize function
   // call look for cookies function
   // call our loop function
 
-// look for cookies, and if found, popuplate time spent object with saved time
+const initilizeLoop = () => {
+  lastTime = Date.now();
+  checkSite(currentDomain, timeWasters);
+  looper();
+};
+
 
 // loop
-  // if display is hidden
-    // just rsest lastTime to current
+const looper = () => {
+  if(!document.hidden) {
+    msElapsed += Date.now() - lastTime;
+    localStorage.setItem(currentDomain, msElapsed);
+  }
 
-  // else
-    // compare lastTime to current time, add difference to timeSpent
-    // rest lastTime to currenTime
+  lastTime = Date.now();
 
-  // save time spent to cookie
+setTimeout(looper, 100);
+console.log(msElapsed)
 
-  // loop?
+}
 
-// make a reset button that clears data for this page, cookie, vars, etc 
+const resetBtn = document.querySelector('button');
+resetBtn.style.color = 'red'; 
 
-
-
+initilizeLoop();
+reset();
 
